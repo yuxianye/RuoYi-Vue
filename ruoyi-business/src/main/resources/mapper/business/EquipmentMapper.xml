@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.EquipmentMapper">
+    
+    <resultMap type="Equipment" id="EquipmentResult">
+        <result property="equipId"    column="equip_id"    />
+        <result property="equipCode"    column="equip_code"    />
+        <result property="equipName"    column="equip_name"    />
+        <result property="equipBrand"    column="equip_brand"    />
+        <result property="equipClassif"    column="equip_classif"    />
+        <result property="equipStatus"    column="equip_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectEquipmentVo">
+        select equip_id, equip_code, equip_name, equip_brand, equip_classif, equip_status, create_by, create_time, update_by, update_time, remark from biz_equipment
+    </sql>
+
+    <select id="selectEquipmentList" parameterType="Equipment" resultMap="EquipmentResult">
+        <include refid="selectEquipmentVo"/>
+        <where>  
+            <if test="equipCode != null  and equipCode != ''"> and equip_code = #{equipCode}</if>
+            <if test="equipName != null  and equipName != ''"> and equip_name like concat('%', #{equipName}, '%')</if>
+            <if test="equipBrand != null  and equipBrand != ''"> and equip_brand = #{equipBrand}</if>
+            <if test="equipClassif != null  and equipClassif != ''"> and equip_classif = #{equipClassif}</if>
+            <if test="equipStatus != null  and equipStatus != ''"> and equip_status = #{equipStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectEquipmentByEquipId" parameterType="Long" resultMap="EquipmentResult">
+        <include refid="selectEquipmentVo"/>
+        where equip_id = #{equipId}
+    </select>
+        
+    <insert id="insertEquipment" parameterType="Equipment" useGeneratedKeys="true" keyProperty="equipId">
+        insert into biz_equipment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="equipCode != null and equipCode != ''">equip_code,</if>
+            <if test="equipName != null and equipName != ''">equip_name,</if>
+            <if test="equipBrand != null">equip_brand,</if>
+            <if test="equipClassif != null">equip_classif,</if>
+            <if test="equipStatus != null">equip_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="equipCode != null and equipCode != ''">#{equipCode},</if>
+            <if test="equipName != null and equipName != ''">#{equipName},</if>
+            <if test="equipBrand != null">#{equipBrand},</if>
+            <if test="equipClassif != null">#{equipClassif},</if>
+            <if test="equipStatus != null">#{equipStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEquipment" parameterType="Equipment">
+        update biz_equipment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="equipCode != null and equipCode != ''">equip_code = #{equipCode},</if>
+            <if test="equipName != null and equipName != ''">equip_name = #{equipName},</if>
+            <if test="equipBrand != null">equip_brand = #{equipBrand},</if>
+            <if test="equipClassif != null">equip_classif = #{equipClassif},</if>
+            <if test="equipStatus != null">equip_status = #{equipStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where equip_id = #{equipId}
+    </update>
+
+    <delete id="deleteEquipmentByEquipId" parameterType="Long">
+        delete from biz_equipment where equip_id = #{equipId}
+    </delete>
+
+    <delete id="deleteEquipmentByEquipIds" parameterType="String">
+        delete from biz_equipment where equip_id in 
+        <foreach item="equipId" collection="array" open="(" separator="," close=")">
+            #{equipId}
+        </foreach>
+    </delete>
+</mapper>
